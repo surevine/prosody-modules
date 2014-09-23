@@ -370,12 +370,11 @@ local get_all_users_layout = dataforms_new{
 	{ name = "FORM_TYPE", type = "hidden", value = "http://jabber.org/protocol/admin" };
 	{ name = "max_items", type = "list-single", label = "Maximum number of users",
 		value = { "25", "50", "75", "100", "150", "200", "all" } };
-	{ name = "details", type = "boolean", label = "Show details" };
 };
 
 local get_all_users_result_layout = dataforms_new{
 	{ name = "FORM_TYPE", type = "hidden", value = "http://jabber.org/protocol/admin" };
-	{ name = "euserjids", type = "text-multi", label = "The list of users" };
+	{ name = "userjids", type = "text-multi", label = "The list of users" };
 };
 
 local get_all_users_command_handler = adhoc_simple(get_all_users_layout, function(fields, err)
@@ -389,26 +388,12 @@ local get_all_users_command_handler = adhoc_simple(get_all_users_layout, functio
 	end
 	local count = 0;
 	local users = {};
-	for username, user in pairs(usermanager_get_users[module_host] or {}) do
+	for user in (usermanager_get_users[module_host] or []) do
 		if (max_items ~= nil) and (count >= max_items) then
 			break;
 		end
-		users[#users+1] = username.."@"..module_host;
+		users[#users+1] = user.."@"..module_host;
 		count = count + 1;
-		if fields.details then
-			for resource, session in pairs(user.sessions or {}) do
-				local status, priority = "unavailable", tostring(session.priority or "-");
-				if session.presence then
-					status = session.presence:child_with_name("show");
-					if status then
-						status = status:get_text() or "[invalid!]";
-					else
-						status = "available";
-					end
-				end
-				users[#users+1] = " - "..resource..": "..status.."("..priority..")";
-			end
-		end
 	end
 	return { status = "completed", result = {layout = get_all_users_result_layout, values = {userjids=t_concat(users, "\n")}} };
 end);
