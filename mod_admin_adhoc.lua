@@ -388,12 +388,11 @@ local get_all_users_command_handler = adhoc_simple(get_all_users_layout, functio
 	end
 	local count = 0;
 	local users = {};
-	for username, user in (usermanager_get_users[module_host] or {}) do
-        module:log('info', username, user);
+	for username, user in usermanager_get_users(module_host) do
 		if (max_items ~= nil) and (count >= max_items) then
 			break;
 		end
-		users[#users+1] = user.."@"..module_host;
+		users[#users+1] = username.."@"..module_host;
 		count = count + 1;
 	end
 	return { status = "completed", result = {layout = get_all_users_result_layout, values = {userjids=t_concat(users, "\n")}} };
