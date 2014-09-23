@@ -779,6 +779,7 @@ local get_user_password_desc = adhoc_new("Get User Password", "http://jabber.org
 local get_user_roster_desc = adhoc_new("Get User Roster","http://jabber.org/protocol/admin#get-user-roster", get_user_roster_handler, "admin");
 local get_user_stats_desc = adhoc_new("Get User Statistics","http://jabber.org/protocol/admin#user-stats", get_user_stats_handler, "admin");
 local get_online_users_desc = adhoc_new("Get List of Online Users", "http://jabber.org/protocol/admin#get-online-users-list", get_online_users_command_handler, "admin");
+local get_all_users_desc = adhoc_new("Get List of All Users", "http://jabber.org/protocol/admin#get-user-list", get_all_users_command_handler, "admin");
 local list_modules_desc = adhoc_new("List loaded modules", "http://prosody.im/protocol/modules#list", list_modules_handler, "admin");
 local load_module_desc = adhoc_new("Load module", "http://prosody.im/protocol/modules#load", load_module_handler, "admin");
 local globally_load_module_desc = adhoc_new("Globally load module", "http://prosody.im/protocol/modules#global-load", globally_load_module_handler, "global_admin");
@@ -799,6 +800,7 @@ module:provides("adhoc", get_user_password_desc);
 module:provides("adhoc", get_user_roster_desc);
 module:provides("adhoc", get_user_stats_desc);
 module:provides("adhoc", get_online_users_desc);
+module:provides("adhoc", get_all_users_desc);
 module:provides("adhoc", list_modules_desc);
 module:provides("adhoc", load_module_desc);
 module:provides("adhoc", globally_load_module_desc);
