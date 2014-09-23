@@ -388,7 +388,7 @@ local get_all_users_command_handler = adhoc_simple(get_all_users_layout, functio
 	end
 	local count = 0;
 	local users = {};
-	for user in (usermanager_get_users[module_host] or []) do
+	for user in (usermanager_get_users[module_host] or {}) do
 		if (max_items ~= nil) and (count >= max_items) then
 			break;
 		end
