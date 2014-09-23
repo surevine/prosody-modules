@@ -14,6 +14,7 @@ local module_host = module:get_host();
 
 local keys = require "util.iterators".keys;
 local usermanager_user_exists = require "core.usermanager".user_exists;
+local usermanager_get_users = require "core.usermanager". users;
 local usermanager_create_user = require "core.usermanager".create_user;
 local usermanager_delete_user = require "core.usermanager".delete_user;
 local usermanager_get_password = require "core.usermanager".get_password;
@@ -359,6 +360,57 @@ local get_online_users_command_handler = adhoc_simple(get_online_users_layout, f
 		end
 	end
 	return { status = "completed", result = {layout = get_online_users_result_layout, values = {onlineuserjids=t_concat(users, "\n")}} };
+end);
+
+-- Getting a list of all users
+local get_all_users_layout = dataforms_new{
+	title = "Getting List of All Users";
+	instructions = "How many users should be returned at most?";
+
+	{ name = "FORM_TYPE", type = "hidden", value = "http://jabber.org/protocol/admin" };
+	{ name = "max_items", type = "list-single", label = "Maximum number of users",
+		value = { "25", "50", "75", "100", "150", "200", "all" } };
+	{ name = "details", type = "boolean", label = "Show details" };
+};
+
+local get_all_users_result_layout = dataforms_new{
+	{ name = "FORM_TYPE", type = "hidden", value = "http://jabber.org/protocol/admin" };
+	{ name = "euserjids", type = "text-multi", label = "The list of users" };
+};
+
+local get_all_users_command_handler = adhoc_simple(get_all_users_layout, function(fields, err)
+	if err then
+		return generate_error_message(err);
+	end
+
+	local max_items = nil
+	if fields.max_items ~= "all" then
+		max_items = tonumber(fields.max_items);
+	end
+	local count = 0;
+	local users = {};
+	for username, user in pairs(usermanager_get_users[module_host] or {}) do
+		if (max_items ~= nil) and (count >= max_items) then
+			break;
+		end
+		users[#users+1] = username.."@"..module_host;
+		count = count + 1;
+		if fields.details then
+			for resource, session in pairs(user.sessions or {}) do
+				local status, priority = "unavailable", tostring(session.priority or "-");
+				if session.presence then
+					status = session.presence:child_with_name("show");
+					if status then
+						status = status:get_text() or "[invalid!]";
+					else
+						status = "available";
+					end
+				end
+				users[#users+1] = " - "..resource..": "..status.."("..priority..")";
+			end
+		end
+	end
+	return { status = "completed", result = {layout = get_all_users_result_layout, values = {userjids=t_concat(users, "\n")}} };
 end);
 
 -- Getting a list of loaded modules
