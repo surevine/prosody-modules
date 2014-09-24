@@ -15,8 +15,10 @@ Clients known to support ad-hoc commands include: Psi, Gajim, Pidgin, tkabber an
 
 # Example
 
+```lua
     modules_enabled = {
         ... other modules here ...
         "adhoc"; -- Also required in Prosody 0.8.x
         "admin_adhoc_get_users";
         ... maybe other modules here ...
+```
