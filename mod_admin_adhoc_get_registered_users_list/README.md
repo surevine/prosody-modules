@@ -1,5 +1,5 @@
-mod_admin_adhoc_get_users
-===========================
+mod_admin_adhoc_get_registered_users_list
+==========================================
 
 Ad-hoc command that allows you to retrieve a list of users on a server.
 
@@ -19,6 +19,6 @@ Clients known to support ad-hoc commands include: Psi, Gajim, Pidgin, tkabber an
     modules_enabled = {
         ... other modules here ...
         "adhoc"; -- Also required in Prosody 0.8.x
-        "admin_adhoc_get_users";
+        "admin_adhoc_get_registered_users_list";
         ... maybe other modules here ...
 ```

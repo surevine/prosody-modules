@@ -29,7 +29,7 @@ local function generate_error_message(errors)
 end
 
 -- Getting a list of all users
-local get_all_users_layout = dataforms_new{
+local get_registered_users_list_layout = dataforms_new{
 	title = "Getting List of All Users";
 	instructions = "How many users should be returned at most?";
 
@@ -38,12 +38,12 @@ local get_all_users_layout = dataforms_new{
 		value = { "25", "50", "75", "100", "150", "200", "all" } };
 };
 
-local get_all_users_result_layout = dataforms_new{
+local get_registered_users_list_result_layout = dataforms_new{
 	{ name = "FORM_TYPE", type = "hidden", value = "http://jabber.org/protocol/admin" };
 	{ name = "userjids", type = "text-multi", label = "The list of users" };
 };
 
-local get_all_users_command_handler = adhoc_simple(get_all_users_layout, function(fields, err)
+local get_registered_users_list_command_handler = adhoc_simple(get_registered_users_list_layout, function(fields, err)
 	if err then
 		return generate_error_message(err);
 	end
@@ -61,9 +61,9 @@ local get_all_users_command_handler = adhoc_simple(get_all_users_layout, functio
 		users[#users+1] = username.."@"..module_host;
 		count = count + 1;
 	end
-	return { status = "completed", result = {layout = get_all_users_result_layout, values = {userjids=t_concat(users, "\n")}} };
+	return { status = "completed", result = {layout = get_registered_users_list_result_layout, values = {userjids=t_concat(users, "\n")}} };
 end);
 
-local get_all_users_desc = adhoc_new("Get List of All Users", "http://jabber.org/protocol/admin#get-user-list", get_all_users_command_handler, "admin");
+local get_registered_users_list_desc = adhoc_new("Get List of All Users", "http://jabber.org/protocol/admin#get-registered-users-list", get_registered_users_list_command_handler, "admin");
 
-module:provides("adhoc", get_all_users_desc);
+module:provides("adhoc", get_registered_users_list_desc);
